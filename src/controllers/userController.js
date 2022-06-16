@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
+const auth = require ("../middleware/auth");
 
 const createUser = async function (abcd, xyz) {
   //You can name the req, res objects anything.
@@ -115,8 +116,21 @@ const postMessage = async function (req, res) {
     return res.send({status: true, data: updatedUser})
 }
 
+const deleteUser = async function(req, res){
+  let  userId = req.params.userId;
+  let user =await userModel.findById(userId);
+  if(!user){
+    res.send("no such user is exit");
+  
+  }
+  let deletedUser = await userModel.findOneAndUpdate({_id:userId},{$set:{isDeleted:true}},{new:true});
+  res.send({msg: "record deleted"})
+
+
+}
 module.exports.createUser = createUser;
 module.exports.getUserData = getUserData;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
-module.exports.postMessage = postMessage
+module.exports.postMessage = postMessage;
+module.exports.deleteUser = deleteUser;
